@@ -1,0 +1,15 @@
+FROM php:7.4-apache
+
+RUN apt-get update && \
+	apt-get install -y \
+	git \
+	curl \
+	apt-utils
+
+# Instala o Composer (nao e obrigatorio)
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/bin --filename=composer
+
+# Ativa a reescrita do .htaccess
+RUN a2enmod rewrite
+
+CMD apachectl -DFOREGROUND
