@@ -1,19 +1,23 @@
 services:
-
-  php:
+  apache:
+    container_name: apache
     build:
       context: .
-      dockerfile: phpapache
+      dockerfile: docker/Dockerfile
     ports:
-      - '8080:80'
-    restart: always
+      - '80:80'
     volumes:
-      - ./:/var/www/html
-      - ./default.conf:/etc/apache2/sites-available/000-default.conf
+      - ./logs:/var/log/apache2
+      - ./docker/apache-2.4.conf:/etc/apache2/sites-enabled/app.conf
+      - ./docker/php.ini:/usr/local/etc/php/custom.ini
+      - ./html:/var/www
+    restart: always
 
   mysql:
+    container_name: mysql
     image: mysql:5.7
-    restart: always
+    ports:
+      - '3306:3306'
     env_file:
       - '.env'
     environment:
@@ -21,7 +25,6 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-    ports:
-      - '3308:3306'
     volumes:
       - './db/mysql:/var/lib/mysql'
+    restart: always
